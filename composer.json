@@ -1,0 +1,24 @@
+{
+  "name" : "nia/sql-adapter-pdo",
+  "description" : "Implementation of the `nia/sql-adapter` component using PDO. The implementation allows you to separate your PDO connection into a read and a write connection.",
+  "require" : {
+    "php" : ">=7.0.0",
+    "nia/sql-adapter" : "*"
+  },
+  "license" : "MIT",
+  "keywords" : [ "nia", "database", "db", "adapter", "connection", "sql", "sqlite", "mysql", "mariadb", "postgresql", "mssql", "oracle", "pdo", "adapter", "read", "write", "readable", "writable", "writeable" ],
+  "minimum-stability" : "dev",
+  "autoload" : {
+    "psr-4" : {
+      "Nia\\Sql\\Adapter\\" : "sources/",
+      "Test\\Nia\\Sql\\Adapter\\" : "tests/"
+    }
+  },
+  "type" : "library",
+  "homepage" : "http://www.nat-software.de",
+  "authors" : [ {
+    "name" : "Patrick Ullmann",
+    "email" : "patrick.ullmann@nat-software.de",
+    "role" : "lead"
+  } ]
+}
