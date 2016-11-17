@@ -69,24 +69,30 @@ class PdoStatement implements StatementInterface
      */
     public function bind(string $name, $value, int $type = null)
     {
-        $mapping = [
-            self::TYPE_STRING => PDO::PARAM_STR,
-            self::TYPE_INT => PDO::PARAM_INT,
-            self::TYPE_DECIMAL => PDO::PARAM_STR,
-            self::TYPE_BOOL => PDO::PARAM_BOOL,
-            self::TYPE_BINARY => PDO::PARAM_LOB,
-            self::TYPE_NULL => PDO::PARAM_NULL
-        ];
-
-        if (! array_key_exists($type, $mapping)) {
-            $type = self::TYPE_STRING;
-        }
+        $pdoParameterType = $this->getPdoParameterType($type);
 
         if ($type === self::TYPE_DECIMAL) {
             $value = (float) $value;
         }
 
-        $this->pdoStatement->bindValue($name, $value, $mapping[$type]);
+        $this->pdoStatement->bindValue($name, $value, $pdoParameterType);
+    }
+
+    /**
+     *
+     * {@inheritdoc}
+     *
+     * @see \Nia\Sql\Adapter\Statement\StatementInterface::bindIndex()
+     */
+    public function bindIndex(int $index, $value, int $type = null)
+    {
+        $pdoParameterType = $this->getPdoParameterType($type);
+
+        if ($type === self::TYPE_DECIMAL) {
+            $value = (float) $value;
+        }
+
+        $this->pdoStatement->bindValue($index, $value, $pdoParameterType);
     }
 
     /**
@@ -156,5 +162,30 @@ class PdoStatement implements StatementInterface
         };
 
         return $generator();
+    }
+
+    /**
+     * Returns the PDO parameter type equivalent to a Nia\Sql\Adapter\Statement\StatementInterface::TYPE_* constant.
+     *
+     * @param int $type
+     *            Data type using one of the Nia\Sql\Adapter\Statement\StatementInterface::TYPE_* constants.
+     * @return mixed The PDO parameter type equivalent.
+     */
+    private function getPdoParameterType(int $type = null)
+    {
+        $mapping = [
+            self::TYPE_STRING => PDO::PARAM_STR,
+            self::TYPE_INT => PDO::PARAM_INT,
+            self::TYPE_DECIMAL => PDO::PARAM_STR,
+            self::TYPE_BOOL => PDO::PARAM_BOOL,
+            self::TYPE_BINARY => PDO::PARAM_LOB,
+            self::TYPE_NULL => PDO::PARAM_NULL
+        ];
+
+        if (array_key_exists($type, $mapping)) {
+            return $mapping[$type];
+        }
+
+        return PDO::PARAM_STR;
     }
 }

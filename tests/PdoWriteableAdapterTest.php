@@ -83,6 +83,7 @@ SQL;
 
         $this->assertSame($this->pdo, $adapter->getPdo());
 
+        // namend placeholders.
         $sqlStatement = "INSERT INTO test(string) VALUES(:string);";
         $statement = $adapter->prepare($sqlStatement);
 
@@ -93,6 +94,16 @@ SQL;
 
         $this->assertSame(4, $adapter->getLastInsertId());
 
+        // question mark placeholders.
+        $sqlStatement = "INSERT INTO test(string) VALUES(?);";
+        $statement = $adapter->prepare($sqlStatement);
+
+        $statement->bindIndex(1, 'foobaz');
+        $statement->execute();
+
+        $this->assertSame(5, $adapter->getLastInsertId());
+
+        // transactions.
         $this->assertSame(false, $adapter->inTransaction());
         $adapter->startTransaction();
         $this->assertSame(true, $adapter->inTransaction());
